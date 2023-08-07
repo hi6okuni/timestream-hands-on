@@ -1,4 +1,4 @@
-module example.com/timestream
+module timestream_hands_on
 
 go 1.20
 

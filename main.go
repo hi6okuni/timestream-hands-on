@@ -1,7 +1,7 @@
 package main
 
 import (
-	"example.com/timestream/timestream"
+	"timestream_hands_on/timestream"
 )
 
 func main() {
