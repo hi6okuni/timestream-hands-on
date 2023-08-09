@@ -45,7 +45,7 @@ func Query() {
 
 	// Set the query input parameters
 	queryInput := &timestreamquery.QueryInput{
-		QueryString: aws.String("SELECT * FROM \"DATABASE\".\"TABLE\" WHERE created_at between ago(1d) and now() ORDER BY id DESC"),
+		QueryString: aws.String("SELECT * FROM \"realtime-test\".\"subscription_measurement_histories\" WHERE created_at between ago(1d) and now() ORDER BY id DESC"),
 	}
 	fmt.Printf("query: %s\n", *queryInput.QueryString)
 
@@ -62,7 +62,7 @@ func Query() {
 	defer writer.Flush()
 
 	// Write the header row to the CSV file
-	header := []string{"subscription_id, time"}
+	header := []string{"id,subscription_id, time"}
 	writer.Write(header)
 
 	for {
@@ -77,10 +77,11 @@ func Query() {
 
 		// Write the data rows to the CSV file
 		for _, row := range queryResponse.Rows {
-			idStr := aws.StringValue(row.Data[0].ScalarValue)
+			idStr := aws.StringValue(row.Data[17].ScalarValue)
+			subscriptionIDStr := aws.StringValue(row.Data[0].ScalarValue)
 			timeStr := aws.StringValue(row.Data[2].ScalarValue)
 
-			data := []string{idStr, timeStr}
+			data := []string{idStr, subscriptionIDStr, timeStr}
 			writer.Write(data)
 		}
 		if queryResponse.NextToken == nil {

@@ -16,10 +16,17 @@ import (
 // 正常書き込みの確認
 
 // 明示的なschema定義は無い
-// カラムは追加できるが、一回作られたカラムのタイプは変更できない
+// カラムは追加できるが、一回作られたカラムのタイプは変更できない(ex. Double -> Bigint)
 // DimensionとTimeが重複判定の要素であることの確認
-// 未来の時刻15分以上は入らない
 // versionを使って、上書きUpsertすることができる
+// 未来の時刻15分以上は入らない
+
+/*
+SELECT * FROM "realtime-test"."hands_on"
+WHERE time between ago(5h) and now()
+AND name = 'YOUR_NAME'
+ORDER BY time DESC LIMIT 10
+*/
 
 func Write() {
 	tr := &http.Transport{
@@ -51,7 +58,7 @@ func Write() {
 	currentTimeInSeconds := now.UnixNano()
 
 	// layout := "2006-01-02 15:04:05"
-	// str := "2023-08-06 15:00:00"
+	// str := "2023-08-09 03:00:00"
 	// specificTime, err := time.Parse(layout, str)
 	// if err != nil {
 	// 	fmt.Println("Error:", err)
@@ -84,14 +91,14 @@ func Write() {
 					},
 					{
 						Name:  aws.String("degree"),
-						Value: aws.String("36.5"),
+						Value: aws.String("37.2"),
 						Type:  aws.String(timestreamwrite.MeasureValueTypeDouble),
 					},
-					// {
-					// 	Name:  aws.String("blood pressure"),
-					// 	Value: aws.String("120"),
-					// 	Type:  aws.String(timestreamwrite.MeasureValueTypeDouble),
-					// },
+					{
+						Name:  aws.String("blood pressure"),
+						Value: aws.String("140"),
+						Type:  aws.String(timestreamwrite.MeasureValueTypeDouble),
+					},
 				},
 			},
 		},
